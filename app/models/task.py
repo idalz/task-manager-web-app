@@ -1,8 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean
-from sqlalchemy.ext.declarative import declarative_base
+from app.database import Base
 
-# Base class for SQLAlchemy models
-Base = declarative_base()
 
 # Task class for Task model
 class Task(Base):

@@ -175,3 +175,6 @@ cython_debug/
 
 # Ignore virtual environment
 env-task-manager/
+
+# Ignore scripts file (development-only utilities)
+scripts/
