@@ -38,6 +38,39 @@ def test_create_task():
     assert data['description'] == "This is a test task"
     assert 'id' in data # Make sure task has an ID after creation
 
+# Test PUT /tasks/
+def test_update_task():
+    # Create a task
+    task_data = {"title": "Original Title", "description": "Original Description"}
+    create_response = client.post("/tasks/", json=task_data)
+    task_id = create_response.json()["id"]
+
+    # Update the task
+    updated_data = {"title": "Updated Title", "description": "Updated Description"}
+    update_response = client.put(f"/tasks/{task_id}", json=updated_data)
+    assert update_response.status_code == 200
+    data = update_response.json()
+    assert data['title'] == updated_data['title']
+    assert data['description'] == updated_data['description']
+
+# Test DELETE /tasks/
+def test_delete_task():
+    # Create a task
+    task_data = {"title": "Task to delete", "description": " Description to delete"}
+    create_response = client.post("/tasks/", json=task_data)
+    task_id = create_response.json()["id"]
+
+    # Delete the  task
+    delete_response = client.delete(f"/tasks/{task_id}")
+    assert delete_response.status_code == 200
+    deleted_task  = delete_response.json()
+    assert deleted_task['id'] == task_id
+
+    # Make sure it's deleted 
+    get_response = client.get(f"/tasks/{task_id}")
+    assert get_response.status_code == 404
+
+
 # Test GET /tasks/
 def test_get_tasks():
     response = client.get("/tasks/")
