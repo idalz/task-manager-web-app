@@ -15,11 +15,30 @@ def create_task(db: Session, task: schemas.TaskCreate):
     db.refresh(db_task) # Give task an id from DB
     return db_task
 
+# Update a task
+def update_task(db: Session, task_id: int, task_update: schemas.TaskUpdate):
+    db_task = db.query(models.Task) .filter(models.Task.id == task_id).first()
+    if db_task:
+        db_task.title = task_update.title
+        db_task.description = task_update.description
+        db .commit()
+        db.refresh()
+    return db_task
+
+# Delete a task
+def delete_task(db: Session, task_id: int):
+    db_task = db.query(models.Task).filter(models.Task.id == task_id).first()
+    if db_task:
+        db.delete(db_task)
+        db.commit()
+    return db_task
+
 # Get all tasks from the DB
 def get_tasks(db: Session,  skip: int = 0, limit: int = 100):
     return db.query(models.Task).offset(skip).limit(limit).all()
-
+ 
 # Get a single task by ID
 def get_task(db: Session, task_id: int):
     return db.query(models.Task).filter(models.Task.id == task_id).first()
   
+

@@ -8,7 +8,6 @@ from app.crud import task as crud
 
 app = FastAPI()
 
-
 # Dependency to get the DB session
 def get_db():
     db = database.SessionLocal()
@@ -21,6 +20,22 @@ def get_db():
 @app.post("/tasks/", response_model=schemas.TaskRead)
 def create_task(task: schemas.TaskCreate, db: Session = Depends(get_db)):
     return crud.create_task(db=db, task=task)
+
+# Update a task
+@app.put("/tasks/{task_id}", response_model=schemas.TaskRead)
+def update_task(task_id: int, task: schemas.TaskUpdate, db: Session = Depends(get_db)):
+    db_task = crud.update_task(db, task_id=task_id, task_update=task)
+    if db_task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return db_task
+
+# Delete a task
+@app.delete("/tasks/{task_id}", response_model=schemas.TaskRead)
+def delete_task(task_id: int, db: Session = Depends(get_db)):
+    db_task = crud.delete_task(db, task_id=task_id)
+    if  db_task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return db_task
 
 # Get all tasks
 @app.get("/tasks/", response_model=list[schemas.TaskRead])

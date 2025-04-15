@@ -9,7 +9,11 @@ class TaskBase(BaseModel):
     completed: bool = False
 
 # Schema for creating a task 
-class TaskCreate(TaskBase):
+class TaskCreate(TaskBase): 
+    pass
+
+# Schema for updating a task
+class TaskUpdate(TaskBase):
     pass
 
 # Schema for reading a task
