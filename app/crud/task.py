@@ -21,8 +21,8 @@ def update_task(db: Session, task_id: int, task_update: schemas.TaskUpdate):
     if db_task:
         db_task.title = task_update.title
         db_task.description = task_update.description
-        db .commit()
-        db.refresh()
+        db.commit()
+        db.refresh(db_task)
     return db_task
 
 # Delete a task
