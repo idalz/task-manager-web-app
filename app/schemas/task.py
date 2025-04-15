@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 
-# Bae schema for reading and creating tasks
+# Base schema for reading and creating tasks
 class TaskBase(BaseModel):
     title: str
     description: Optional[str] = None
