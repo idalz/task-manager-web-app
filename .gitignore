@@ -178,3 +178,6 @@ env-task-manager/
 
 # Ignore scripts file (development-only utilities)
 scripts/
+
+# Ignore db
+*.db
