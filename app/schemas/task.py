@@ -17,5 +17,5 @@ class TaskRead(TaskBase):
     id: int
 
     # Make it a response model
-    class Config:
-        orm_mode = True
+    class ConfigDict:
+        from_attributes = True

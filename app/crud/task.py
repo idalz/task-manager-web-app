@@ -1,10 +1,11 @@
 from sqlalchemy.orm import Session
-from app import models, schemas
+from app.models import task as models
+from app.schemas import task as schemas
 
 
 # Create a new task
 def create_task(db: Session, task: schemas.TaskCreate):
-    db_task = models.task.Task(
+    db_task = models.Task(
         title=task.title,
         description=task.description,
         completed=task.completed
@@ -16,8 +17,9 @@ def create_task(db: Session, task: schemas.TaskCreate):
 
 # Get all tasks from the DB
 def get_tasks(db: Session,  skip: int = 0, limit: int = 100):
-    return db.query(models.task.Task).offset(skip).limit(limit).all()
+    return db.query(models.Task).offset(skip).limit(limit).all()
 
 # Get a single task by ID
 def get_task(db: Session, task_id: int):
-    return db.query(models.task.Task).filter(models.task.Task.id == task_id).first()
+    return db.query(models.Task).filter(models.Task.id == task_id).first()
+  
