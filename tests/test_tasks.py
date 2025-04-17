@@ -1,34 +1,5 @@
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from app.database import Base
-from app.main import app
-from app.routes.task import get_db
-
-# Set up a testing database
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Recreate tables in test DB
-Base.metadata.drop_all(bind=engine)
-Base.metadata.create_all(bind=engine)
-
-# Dependency override
-def override_get_db():
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-app.dependency_overrides[get_db] = override_get_db
-
-# Use  TestClient to test fastAPI app
-client = TestClient(app)
-
 # Test POST /tasks/
-def test_create_task():
+def test_create_task(client):
     response = client.post("/tasks/", json={
         "title": "Test Task", 
         "description": "This is a test task"
@@ -40,7 +11,7 @@ def test_create_task():
     assert 'id' in data # Make sure task has an ID after creation
 
 # Test PUT /tasks/
-def test_update_task():
+def test_update_task(client):
     # Create a task
     task_data = {"title": "Original Title", "description": "Original Description"}
     create_response = client.post("/tasks/", json=task_data)
@@ -55,7 +26,7 @@ def test_update_task():
     assert data['description'] == updated_data['description']
 
 # Test DELETE /tasks/
-def test_delete_task():
+def test_delete_task(client):
     # Create a task
     task_data = {"title": "Task to delete", "description": " Description to delete"}
     create_response = client.post("/tasks/", json=task_data)
@@ -71,16 +42,23 @@ def test_delete_task():
     get_response = client.get(f"/tasks/{task_id}")
     assert get_response.status_code == 404
 
-
 # Test GET /tasks/
-def test_get_tasks():
+def test_get_tasks(client):
+    # Create tasks
+    task_data = {"title": "Task 1", "description": "desc 2"}
+    create_response = client.post("/tasks/", json=task_data)
+    
+    task_data = {"title": "Task 2", "description": "desc 2"}
+    create_response = client.post("/tasks/", json=task_data)
+
+    # Get the tasks back
     response = client.get("/tasks/")
     assert response.status_code == 200
     data = response.json()
     assert isinstance(data, list)
     assert len(data) > 0 # Make sure there is at least one task
 
-def test_get_task_by_id():
+def test_get_task_by_id(client):
     # Create task
     task_data = {"title": "Task by ID", "description": "Fetch by ID"}
     create_response = client.post("/tasks/", json=task_data)
