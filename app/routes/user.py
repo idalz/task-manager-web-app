@@ -3,27 +3,18 @@ from sqlalchemy.orm import Session
 from app import database
 from app.models import user as models
 from app.schemas import user as schemas
-from app.utils import hash_password
+from app.dependencies.auth import get_current_user
+from app.crud import user as crud
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-# Dependency to get DB session
-def get_db():
-    db = database.SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-@router.post("/", response_model=schemas.UserRead)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(models.User).filter(models.User.email== user.email).first()
-    if db_user:
+@router.post("/register/", response_model=schemas.UserRead)
+def create_user(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
+    db_user = crud.create_user(db=db, user=user)
+    if db_user is None:
         raise HTTPException(status_code=400, detail="Email already registered")
-    
-    hashed_pw = hash_password(user.password)
-    new_user = models.User(email=user.email, hash_password=hashed_pw)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
+    return db_user
+
+@router.get("/protected-route/")
+def protected_route(current_user: models.User = Depends(get_current_user)):
+    return {"message": f"Hello {current_user.email}!"}

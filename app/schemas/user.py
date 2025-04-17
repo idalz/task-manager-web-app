@@ -13,6 +13,6 @@ class UserRead(UserBase):
     id: int
 
     # Make it a response model
-    class Config:
+    class ConfigDict:
         from_attributes = True
         
