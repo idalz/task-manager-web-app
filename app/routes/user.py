@@ -9,7 +9,7 @@ from app.crud import user as crud
 router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.post("/register/", response_model=schemas.UserRead)
-def create_user(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
+async def create_user(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
     db_user = crud.create_user(db=db, user=user)
     if db_user is None:
         raise HTTPException(status_code=400, detail="Email already registered")

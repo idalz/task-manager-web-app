@@ -10,10 +10,10 @@ from app import utils
 router = APIRouter()
 
 @router.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
     user = auth.authenticate_user(db, form_data.username, form_data.password)
 
-    if not user or not utils.verify_password(form_data.password, user.hashed_password):
+    if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Invalid credentials")
     
     access_token_expires = timedelta(minutes=30)

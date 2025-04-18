@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+</head>
+<body>
+    <h2>Register</h2>
+    <form method="post" action="/users/register">
+        <label>Email:</label><br>
+        <input type="email" name="email" required><br><br>
+        <label>Password:</label><br>
+        <input type="password" name="password" required><br><br>
+        <button type="submit">Register</button>
+    </form>
+    <p>Already have an account? <a href="/login">Login here</a></p>
+</body>
+<script>
+    const form = document.querySelector("form");
+
+    form.addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const email = document.querySelector("[name='email']").value;
+        const password = document.querySelector("[name='password']").value;
+
+        const response = await fetch('/users/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            alert("Registration successful! You can now log in.");
+            window.location.href = '/login'; // Redirect to the login page after successful registration
+        } else {
+            const error = await response.json();
+            alert(`Error: ${error.detail}`);
+        }
+    });
+</script>
+</html>
