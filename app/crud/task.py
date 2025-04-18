@@ -22,8 +22,8 @@ def update_task(db: Session, task_id: int, task_update: schemas.TaskUpdate, user
         models.Task.owner_id == user.id
     ).first()
     if db_task:
-        db_task.title = task_update.title
-        db_task.description = task_update.description
+        for field, value in task_update.model_dump(exclude_unset=True).items():
+            setattr(db_task, field, value)
         db.commit() 
         db.refresh(db_task)
     return db_task
