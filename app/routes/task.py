@@ -7,10 +7,10 @@ from app.crud import task as crud
 from app.dependencies import auth
 
 
-router = APIRouter()
+router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
 # Create a new task
-@router.post("/tasks/", response_model=schemas.TaskRead)
+@router.post("/", response_model=schemas.TaskRead)
 def create_task_route(
     task: schemas.TaskCreate,
     db: Session = Depends(database.get_db),
@@ -19,7 +19,7 @@ def create_task_route(
     return crud.create_task(db=db, task=task, user=current_user)
 
 # Update a task
-@router.put("/tasks/{task_id}", response_model=schemas.TaskRead)
+@router.put("/{task_id}", response_model=schemas.TaskRead)
 def update_task(
     task_id: int, 
     task: schemas.TaskUpdate, 
@@ -32,7 +32,7 @@ def update_task(
     return db_task
 
 # Delete a task
-@router.delete("/tasks/{task_id}", response_model=schemas.TaskRead)
+@router.delete("/{task_id}", response_model=schemas.TaskRead)
 def delete_task(
     task_id: int, 
     db: Session = Depends(database.get_db),
@@ -44,7 +44,7 @@ def delete_task(
     return db_task
 
 # Get all tasks
-@router.get("/tasks/", response_model=list[schemas.TaskRead])
+@router.get("/", response_model=list[schemas.TaskRead])
 def  get_tasks(
     skip: int = 0, limit: int = 100, 
     db: Session = Depends(database.get_db),
@@ -55,3 +55,14 @@ def  get_tasks(
         raise HTTPException(status_code=404, detail="Tasks not found")
     return db_task
     
+# Get a single task by ID
+@router.get("/{task_id}", response_model=schemas.TaskRead) 
+def get_task(
+    task_id: int, 
+    db: Session = Depends(database.get_db),
+    current_user: usermodels.User = Depends(auth.get_current_user)   
+):
+    task = crud.get_task(db=db, task_id=task_id, user=current_user)
+    if task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return task
