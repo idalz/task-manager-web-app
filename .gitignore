@@ -181,7 +181,3 @@ scripts/
 
 # Ignore db
 *.db
-
-
-# Ignore node modules
-node_modules/
