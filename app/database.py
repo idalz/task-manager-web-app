@@ -1,14 +1,17 @@
+import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 
-# SQLite database URL 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./task_manager.db"
+# Load environment variables from .env file
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # connect_args for SQLite
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread":False}
+    DATABASE_URL, connect_args={"check_same_thread":False}
 )
 
 # SessionLocal instance for every DB session
