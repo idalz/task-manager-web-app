@@ -2,7 +2,6 @@
 <html>
 <head>
     <link rel="stylesheet" href="/static/css/style.css">
-    <title>Dashboard</title>
     <style>
         body.hidden { display: none; }
 
@@ -30,6 +29,7 @@
             border-radius: 8px;
         }
     </style>
+    <title>Dashboard</title>         
 </head>
 <body class="hidden">
     <div class="container">
@@ -64,7 +64,7 @@
         <!-- Search Box -->
         <div style="display: flex; align-items: center; gap: 8px;">
             <label for="search">Search:</label>
-            <input type="text" id="search" placeholder="Search tasks...">
+            <input type="text" id="search-box" placeholder="Search tasks..." />
         </div>
     </div>
     <button id="show-modal" class="btn-green">+ New Task</button>
@@ -272,7 +272,7 @@
                 const div = document.createElement('div');
                 div.className = `task ${task.status.replace(/\s/g, "-")}`;
 
-                const dueDate = task.due_date ? new Date(task.due_date).toLocaleDateString() : "No due date";
+                const dueDate = task.due_date ? new Date(task.due_date).toLocaleDateString() : " ";
 
                 div.innerHTML = `
                     <strong>${task.title}</strong><br>
