@@ -51,4 +51,6 @@ async def register_page(request: Request):
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard_page(request: Request):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+    response = templates.TemplateResponse("dashboard.html", {"request": request})
+    response.headers["Cache-Control"] = "no-store"
+    return response

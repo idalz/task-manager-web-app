@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+<script>
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
+            if (!localStorage.getItem('access_token')) {
+                location.href = '/login';
+            }
+        }
+    });
+</script>
 <html>
 <head>
     <link rel="stylesheet" href="/static/css/style.css">
@@ -11,7 +20,7 @@
             border: 1px solid #ccc;
             border-radius: 6px;
         }
-
+ 
         .modal {
             display: none;
             position: fixed;
@@ -34,7 +43,7 @@
 <body class="hidden">
     <div class="container">
         <div class="header">
-            <h2>Welcome to your Dashboard</h2>
+            <h2 id="welcome-message">Welcome</h2>
             <button id="logout-btn" class="btn-red">Logout</button>
         </div>
     
@@ -101,6 +110,17 @@
 
     <script>
         const token = localStorage.getItem('access_token');
+        if (!token) { 
+            window.location.href = '/login';
+        } else {
+            document.body.style.display = '';  // Show dashboard only after verification
+        }
+
+        const email = localStorage.getItem('email');
+        if (email) {
+            document.getElementById('welcome-message').innerText = `Welcome, ${email}`;
+        }
+        
         const createModal = document.getElementById("task-modal");
         const editModal = document.getElementById("edit-modal");
 
@@ -142,7 +162,9 @@
 
         // Logout
         document.getElementById('logout-btn').addEventListener('click', () => {
-            localStorage.removeItem('access_token');
+            localStorage.removeItem('access_token');  
+            localStorage.removeItem('email');
+            document.body.style.display = 'none';  // Hide everything initially 
             window.location.href = '/login';
         });
 
