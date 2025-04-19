@@ -1,0 +1,119 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 20px;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+h2 {
+    color: #333;
+}
+
+.task {
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    padding: 15px;
+    margin-bottom: 10px;
+}
+.task.pending {
+    background-color: #fff4e5; /* soft orange */
+    border-left: 5px solid #ffa500;
+}
+
+.task.in-progress {
+    background-color: #e6f0ff; /* light blue */
+    border-left: 5px solid #1e90ff;
+}
+
+.task.completed {
+    background-color: #e6ffe6; /* light green */
+    border-left: 5px solid #32cd32;
+}
+button {
+    padding: 6px 12px;
+    margin-right: 5px;
+    border: none;
+    background-color: #1976d2;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  /* Dark Green (Success) */
+  .btn-green {
+    background-color: #2e7d32; /* Darker green */
+    color: white;
+  }
+  .btn-green:hover {
+    background-color: #1b5e20;
+  }
+  
+  /* Dark Blue (Primary/Info) */
+  .btn-blue {
+    background-color: #1565c0; /* Darker blue */
+    color: white;
+  }
+  .btn-blue:hover {
+    background-color: #0d47a1;
+  }
+  
+  /* Dark Red (Danger) */
+  .btn-red {
+    background-color: #c62828; /* Darker red */
+    color: white;
+  }
+  .btn-red:hover {
+    background-color: #b71c1c;
+  }
+  
+  /* Dark Gray (Neutral) */
+  .btn-gray {
+    background-color: #616161; /* Darker gray */
+    color: white;
+  }
+  .btn-gray:hover {
+    background-color: #424242;
+  }
+   
+button:hover {
+    background-color: #0d47a1;
+}
+
+input, textarea, select {
+    padding: 6px;
+    margin: 5px 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal-content {
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+#show-modal {
+    margin-bottom: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}

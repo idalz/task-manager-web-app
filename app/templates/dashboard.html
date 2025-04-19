@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="/static/css/style.css">
     <title>Dashboard</title>
     <style>
         body.hidden { display: none; }
@@ -31,28 +32,42 @@
     </style>
 </head>
 <body class="hidden">
-    <h2>Welcome to your Dashboard</h2>
-    <button id="logout-btn">Logout</button>
-    <button id="show-modal">+ New Task</button>
+    <div class="container">
+        <div class="header">
+            <h2>Welcome to your Dashboard</h2>
+            <button id="logout-btn" class="btn-red">Logout</button>
+        </div>
     
-    <h3>Filter Tasks by Status</h3>
-    <select id="status-filter">
-        <option value="">All</option>
-        <option value="pending">Pending</option>
-        <option value="in progress">In Progress</option>
-        <option value="completed">Completed</option>
-    </select>
+    <!-- Filter, Sort & Search Section -->
+    <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin: 20px auto;">
+        <!-- Filter Dropdown -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <label for="status-filter">Filter:</label>
+            <select id="status-filter">
+                <option value="">All</option>
+                <option value="pending">Pending</option>
+                <option value="in progress">In Progress</option>
+                <option value="completed">Completed</option>
+            </select>
+        </div>
 
-    <h3>Sort Tasks</h3>
-    <select id="filter">
-        <option value="">-- Select Filter --</option>
-        <option value="due">Sort by Due Date</option>
-        <option value="status">Sort by Status</option>
-    </select>
-    <h3>Search Tasks</h3>
-    <input type="text" id="search-box" placeholder="Search by title or description...">
+        <!-- Sort Dropdown -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <label for="filter">Sort:</label>
+            <select id="filter">
+                <option value="">-- Select --</option>
+                <option value="due">Due Date</option>
+                <option value="status">Status</option>
+            </select>
+        </div>
 
-
+        <!-- Search Box -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <label for="search">Search:</label>
+            <input type="text" id="search" placeholder="Search tasks...">
+        </div>
+    </div>
+    <button id="show-modal" class="btn-green">+ New Task</button>
     <div id="tasks"></div>
 
     <!-- Create Task Modal -->
@@ -63,8 +78,8 @@
                 <input type="text" id="title" placeholder="Title" required><br>
                 <textarea id="description" placeholder="Description"></textarea><br>
                 <input type="date" id="due_date"><br><br>
-                <button type="submit">Add Task</button>
-                <button type="button" id="cancel-modal">Cancel</button>
+                <button type="submit" btn-green>Add Task</button>
+                <button type="button" id="cancel-modal" class="btn-gray">Cancel</button>
             </form>
         </div>
     </div>
@@ -78,8 +93,8 @@
                 <input type="text" id="edit-title" required><br>
                 <textarea id="edit-description"></textarea><br>
                 <input type="date" id="edit-due_date"><br><br>
-                <button type="submit">Update Task</button>
-                <button type="button" id="cancel-edit">Cancel</button>
+                <button type="submit" class="btn-blue">Update Task</button>
+                <button type="button" id="cancel-edit" class="btn-red">Cancel</button>
             </form>
         </div>
     </div>
@@ -204,7 +219,7 @@
         }
 
         // Update task status
-        async function updateStatus(taskId, newStatus) {
+        async function updateStatus(taskId, newStatus, taskDiv) {
             const response = await fetch(`/tasks/${taskId}`, {
                 method: "PUT",
                 headers: {
@@ -214,7 +229,12 @@
                 body: JSON.stringify({ status: newStatus })
             });
 
-            if (!response.ok) alert("Failed to update task status.");
+            if (response.ok) {
+                // Update class to reflect new status color
+                taskDiv.className = `task ${newStatus.replace(/\s/g, "-")}`;
+            } else {
+                alert("Failed to update task status.");
+            }
         }
 
         let allTasks = [];
@@ -250,22 +270,21 @@
 
             tasks.forEach(task => {
                 const div = document.createElement('div');
-                div.className = "task";
+                div.className = `task ${task.status.replace(/\s/g, "-")}`;
 
                 const dueDate = task.due_date ? new Date(task.due_date).toLocaleDateString() : "No due date";
 
                 div.innerHTML = `
                     <strong>${task.title}</strong><br>
-                    Description: ${task.description || "None"}<br>
-                    Status: 
-                    <select onchange="updateStatus(${task.id}, this.value)">
+                    ${task.description || "  "}<br>
+                    ${dueDate}<br><br>
+                    <select onchange="updateStatus(${task.id}, this.value, this.closest('.task'))">
                         <option value="pending" ${task.status === 'pending' ? 'selected' : ''}>Pending</option>
                         <option value="in progress" ${task.status === 'in progress' ? 'selected' : ''}>In Progress</option>
                         <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>Completed</option>
                     </select><br>
-                    Due Date: ${dueDate}<br><br>
-                    <button onclick='editTask(${JSON.stringify(task)})'>Edit</button>
-                    <button onclick='deleteTask(${task.id})'>Delete</button>
+                    <button class="btn-blue" onclick='editTask(${JSON.stringify(task)})'>Edit</button>
+                    <button class="btn-red" onclick='deleteTask(${task.id})'>Delete</button>
                 `;
 
                 tasksDiv.appendChild(div);
@@ -307,5 +326,6 @@
             renderTasks(filtered);
         });
     </script>
+</div>
 </body>
 </html>
