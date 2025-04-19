@@ -5,7 +5,6 @@ from datetime import timedelta
 
 from app import database
 from app.dependencies import auth
-from app import utils
 
 router = APIRouter()
 

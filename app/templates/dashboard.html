@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <style>
+        body.hidden { display: none; }
+
+        .task {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            width: 300px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="hidden">
+    <h2>Welcome to your Dashboard</h2>
+    <button id="logout-btn">Logout</button>
+    <button id="show-modal">+ New Task</button>
+    
+    <h3>Filter Tasks by Status</h3>
+    <select id="status-filter">
+        <option value="">All</option>
+        <option value="pending">Pending</option>
+        <option value="in progress">In Progress</option>
+        <option value="completed">Completed</option>
+    </select>
+
+    <h3>Sort Tasks</h3>
+    <select id="filter">
+        <option value="">-- Select Filter --</option>
+        <option value="due">Sort by Due Date</option>
+        <option value="status">Sort by Status</option>
+    </select>
+    <h3>Search Tasks</h3>
+    <input type="text" id="search-box" placeholder="Search by title or description...">
+
+
+    <div id="tasks"></div>
+
+    <!-- Create Task Modal -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content">
+            <h3>Create Task</h3>
+            <form id="task-form">
+                <input type="text" id="title" placeholder="Title" required><br>
+                <textarea id="description" placeholder="Description"></textarea><br>
+                <input type="date" id="due_date"><br><br>
+                <button type="submit">Add Task</button>
+                <button type="button" id="cancel-modal">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <h3>Edit Task</h3>
+            <form id="edit-form">
+                <input type="hidden" id="edit-id">
+                <input type="text" id="edit-title" required><br>
+                <textarea id="edit-description"></textarea><br>
+                <input type="date" id="edit-due_date"><br><br>
+                <button type="submit">Update Task</button>
+                <button type="button" id="cancel-edit">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('access_token');
+        const createModal = document.getElementById("task-modal");
+        const editModal = document.getElementById("edit-modal");
+
+        const form = document.getElementById("task-form");
+        const editForm = document.getElementById("edit-form");
+
+        if (!token) {
+            window.location.href = '/login';
+        }
+
+        // Show & Hide Create Modal
+        document.getElementById("show-modal").addEventListener("click", () => {
+            createModal.style.display = "block";
+        });
+
+        function closeCreateModal() {
+            createModal.style.display = "none";
+            form.reset();
+        }
+
+        document.getElementById("cancel-modal").addEventListener("click", closeCreateModal);
+
+        // Show Edit Modal
+        function editTask(task) {
+            document.getElementById("edit-id").value = task.id;
+            document.getElementById("edit-title").value = task.title;
+            document.getElementById("edit-description").value = task.description || "";
+            document.getElementById("edit-due_date").value = task.due_date ? task.due_date.split("T")[0] : "";
+
+            editModal.style.display = "block";
+        }
+
+        function closeEditModal() {
+            editModal.style.display = "none";
+            editForm.reset();
+        }
+
+        document.getElementById("cancel-edit").addEventListener("click", closeEditModal);
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('access_token');
+            window.location.href = '/login';
+        });
+
+        // Submit New Task
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const title = document.getElementById("title").value;
+            const description = document.getElementById("description").value;
+            const dueDate = document.getElementById("due_date").value;
+
+            const response = await fetch("/tasks", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    title,
+                    description,
+                    due_date: dueDate ? new Date(dueDate).toISOString() : null
+                })
+            });
+
+            if (response.ok) {
+                closeCreateModal();
+                location.reload();
+            } else {
+                alert("Failed to create task!");
+            }
+        });
+
+        // Submit Task Edit
+        editForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const taskId = document.getElementById("edit-id").value;
+            const title = document.getElementById("edit-title").value;
+            const description = document.getElementById("edit-description").value;
+            const dueDate = document.getElementById("edit-due_date").value;
+
+            const response = await fetch(`/tasks/${taskId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    title,
+                    description,
+                    due_date: dueDate ? new Date(dueDate).toISOString() : null
+                })
+            });
+
+            if (response.ok) {
+                closeEditModal();
+                location.reload();
+            } else {
+                alert("Failed to update task");
+            }
+        });
+
+        // Delete Task
+        async function deleteTask(taskId) {
+            const confirmDelete = confirm("Are you sure you want to delete this task?");
+            if (!confirmDelete) return;
+
+            const response = await fetch(`/tasks/${taskId}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+
+            if (response.ok) location.reload();
+            else alert("Failed to delete task");
+        }
+
+        // Update task status
+        async function updateStatus(taskId, newStatus) {
+            const response = await fetch(`/tasks/${taskId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ status: newStatus })
+            });
+
+            if (!response.ok) alert("Failed to update task status.");
+        }
+
+        let allTasks = [];
+
+        // Fetch and render tasks
+        fetch('/tasks', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Failed to fetch tasks");
+            return response.json();
+        })
+        .then(data => {
+            document.body.classList.remove('hidden');
+            allTasks = data;
+            renderTasks(allTasks);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            window.location.href = '/login';
+        });
+
+        // Render tasks function
+        function renderTasks(tasks) {
+            const tasksDiv = document.getElementById('tasks');
+            tasksDiv.innerHTML = "";
+
+            if (tasks.length === 0) {
+                tasksDiv.innerHTML = "<p>No tasks available.</p>";
+                return;
+            }
+
+            tasks.forEach(task => {
+                const div = document.createElement('div');
+                div.className = "task";
+
+                const dueDate = task.due_date ? new Date(task.due_date).toLocaleDateString() : "No due date";
+
+                div.innerHTML = `
+                    <strong>${task.title}</strong><br>
+                    Description: ${task.description || "None"}<br>
+                    Status: 
+                    <select onchange="updateStatus(${task.id}, this.value)">
+                        <option value="pending" ${task.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="in progress" ${task.status === 'in progress' ? 'selected' : ''}>In Progress</option>
+                        <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>Completed</option>
+                    </select><br>
+                    Due Date: ${dueDate}<br><br>
+                    <button onclick='editTask(${JSON.stringify(task)})'>Edit</button>
+                    <button onclick='deleteTask(${task.id})'>Delete</button>
+                `;
+
+                tasksDiv.appendChild(div);
+            });
+        }
+
+        // Filter by status
+        document.getElementById("status-filter").addEventListener("change", function () {
+            const value = this.value;
+            if (value === "") {
+                renderTasks(allTasks);
+            } else {
+                const filtered = allTasks.filter(task => task.status === value);
+                renderTasks(filtered);
+            }
+        });
+
+        // Sort dropdown
+        document.getElementById("filter").addEventListener("change", function () {
+            const value = this.value;
+            let sortedTasks = [...allTasks];
+
+            if (value === "due") {
+                sortedTasks.sort((a, b) => new Date(a.due_date || 0) - new Date(b.due_date || 0));
+            } else if (value === "status") {
+                sortedTasks.sort((a, b) => a.status.localeCompare(b.status));
+            }
+
+            renderTasks(sortedTasks);
+        });
+
+        // Search functionality
+        document.getElementById("search-box").addEventListener("input", function () {
+            const query = this.value.toLowerCase();
+            const filtered = allTasks.filter(task =>
+                task.title.toLowerCase().includes(query) ||
+                (task.description && task.description.toLowerCase().includes(query))
+            );
+            renderTasks(filtered);
+        });
+    </script>
+</body>
+</html>
