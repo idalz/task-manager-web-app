@@ -24,13 +24,13 @@ A full-stack task manager web application built using **FastAPI** and **PostgreS
 ---
 ## Tech Stack
 
-- Frontend: HTML, CSS, JavaScript
-- Backend: FastAPI (Python 3.11)
-- Database: PostgreSQL
-- Authentication: JWT
-- ORM: SQLAlchemy
-- Database Migrations: Alembic
-- Containerization: Docker
+- **Frontend**: HTML, CSS, JavaScript
+- **Backend**: FastAPI (Python 3.11)
+- **Database**: PostgreSQL
+- **Authentication**: JWT
+- **ORM**: SQLAlchemy
+- **Database Migrations**: Alembic
+- **Containerization**: Docker
 
 ---
 ## Usage
