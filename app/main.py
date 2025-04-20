@@ -1,16 +1,10 @@
-import httpx
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from starlette.requests import Request
 from app.routes import task, user, auth
-from app.models.user import User
-from app.dependencies.auth import get_current_user
-from app.database import get_db
-from sqlalchemy.orm import Session
-from app.dependencies.auth import oauth2_scheme
 
 app = FastAPI()
 
