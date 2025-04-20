@@ -1,9 +1,17 @@
-# Task Manager Web App
+# Task Manager Web App 
+
+A full-stack task manager web application built using **FastAPI** and **PostgreSQL**. This app allows users to create, edit and delete tasks (title, descriptions, status and dates). It also includes features like user authentication, task filtering, sorting and search.
 
 ---
-## Description
+## Contents 
 
-A full-stack task manager web application built using FastAPI and PostgreSQL. This app allows users to create, edit and delete tasks (title, descriptions, status and dates). It also includes features like user authentication, task filtering, sorting and search.
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Usage](#usage)
+- [How to Install](#how-to-install)
+- [Development](#development)
+- [Testing](#testing)
+- [License](#license)
 
 ---
 ## Features
@@ -14,7 +22,7 @@ A full-stack task manager web application built using FastAPI and PostgreSQL. Th
 - Dockerized for easy setup and deployment.
 
 ---
-### Tech Stack
+## Tech Stack
 
 - Frontend: HTML, CSS, JavaScript
 - Backend: FastAPI (Python 3.11)
@@ -25,7 +33,7 @@ A full-stack task manager web application built using FastAPI and PostgreSQL. Th
 - Containerization: Docker
 
 ---
-### Usage
+## Usage
 
 1. Sign Up and Log In:
 
@@ -48,7 +56,7 @@ A full-stack task manager web application built using FastAPI and PostgreSQL. Th
 ![Alt text](app_screenshots/dashboard.png)
 
 ---
-### How to Install
+## How to Install
 
 1. Clone the repository:
 
@@ -58,7 +66,7 @@ git clone https://github.com/idalz/task-manager-web-app.git
 
 2. Set up enviroment variables:
 
-Create a .env file in the root directory (task-manager-web-app) and add the following variables:
+Create a `.env` file in the root directory (task-manager-web-app) and add the following variables:
 
 ```
 DATABASE_URL=postgresql+psycopg2://<your-username>:<your-password>@db:5432/task_manager_db
@@ -88,14 +96,14 @@ Inside the app container run the following to set up the schemas:
 docker-compose exec app alembic upgrade head
 ```
 
-This will create the necessary tables: users and tasks.
+This will create the necessary tables: `users` and `tasks`.
 
 5. Run the application:
 
 The app will be running at http://localhost:8000.
 
 ---
-### Development
+## Development
 
 Running Locally Without Docker:
 
@@ -105,16 +113,16 @@ Running Locally Without Docker:
 pip install -r requirements.txt
 ```
 
-2. Set up the environment variables (.env):
+2. Set up the environment variables in `.env`:
 
-You may need to change the DATABASE_URL to localhost: 
+You may need to change the `DATABASE_URL` to `localhost`: 
 
 ```
 DATABASE_URL=postgresql+psycopg2://<your-username>:<your-password>@localhost:5432/task_manager_db
 ...
 ```
 
-3. Create a PostgreSQL database named task_manager_db.
+3. Create a PostgreSQL database named `task_manager_db`.
 
 4. Run Alembic Migrations Locally:
 
@@ -131,7 +139,7 @@ uvicorn app.main:app --reload
 6. Access the app at http://localhost:8000.
 
 ---
-### Testing
+## Testing
 
 If you would like to run tests, ensure you installed pytest:
 
@@ -142,5 +150,5 @@ pip install pytest
 Tests currently use SQLite for simplicity.
 
 ---
-### License
+## License
 This project is licensed under the MIT License.
