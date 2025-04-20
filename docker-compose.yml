@@ -22,7 +22,7 @@ services:
     image: postgres:13
     container_name: task_manager_db
     environment:
-      - POSTGRES_DB=task_manager
+      - POSTGRES_DB=task_manager_db
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
