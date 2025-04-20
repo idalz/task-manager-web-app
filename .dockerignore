@@ -16,3 +16,4 @@ tests/
 .vscode/
 .idea/
 pytest.ini
+app_screenshots/
