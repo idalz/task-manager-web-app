@@ -1,6 +1,7 @@
-# Task Manager Web App 
+# Task Manager Web App
 
-A full-stack task manager app with **FastAPI** and **PostgreSQL**, featuring **JWT**-based user authentication, **CRUD** operations, task filtering, sorting, and search. **Dockerized** and **Alembic**-enabled for production-ready deployment and migrations. 
+A full-stack task manager app with **FastAPI** and **PostgreSQL**, featuring **JWT**-based user authentication, **CRUD** operations, task filtering, sorting, and search. **Dockerized** and **Alembic**-enabled for production-ready deployment and migrations.
+
 ---
 ## Contents 
 
@@ -40,7 +41,7 @@ A full-stack task manager app with **FastAPI** and **PostgreSQL**, featuring **J
 
 ![Alt text](app_screenshots/register.png)
 
-- Login in the login page (home page).
+- Log in through the login page (home page).
 
 ![Alt text](app_screenshots/login.png)
 
@@ -63,7 +64,7 @@ A full-stack task manager app with **FastAPI** and **PostgreSQL**, featuring **J
 git clone https://github.com/idalz/task-manager-web-app.git
 ```
 
-2. Set up enviroment variables:
+2. Set up environment variables:
 
 Create a `.env` file in the root directory (task-manager-web-app) and add the following variables:
 
