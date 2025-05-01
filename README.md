@@ -1,7 +1,6 @@
 # Task Manager Web App 
 
-A full-stack task manager web application built using **FastAPI** and **PostgreSQL**. This app allows users to create, edit and delete tasks (title, descriptions, status and dates). It also includes features like user authentication, task filtering, sorting and search.
-
+A full-stack task manager app with **FastAPI** and **PostgreSQL**, featuring **JWT**-based user authentication, **CRUD** operations, task filtering, sorting, and search. **Dockerized** and **Alembic**-enabled for production-ready deployment and migrations.  
 ---
 ## Contents 
 
@@ -151,4 +150,5 @@ Tests currently use SQLite for simplicity.
 
 ---
 ## License
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).
+
