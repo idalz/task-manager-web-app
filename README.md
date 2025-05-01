@@ -1,6 +1,6 @@
 # Task Manager Web App 
 
-A full-stack task manager app with **FastAPI** and **PostgreSQL**, featuring **JWT**-based user authentication, **CRUD** operations, task filtering, sorting, and search. **Dockerized** and **Alembic**-enabled for production-ready deployment and migrations.  
+A full-stack task manager app with **FastAPI** and **PostgreSQL**, featuring **JWT**-based user authentication, **CRUD** operations, task filtering, sorting, and search. **Dockerized** and **Alembic**-enabled for production-ready deployment and migrations. 
 ---
 ## Contents 
 
